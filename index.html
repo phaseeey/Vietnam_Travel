@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>🇻🇳 Vietnam 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B3A5C;
+    --teal: #2E7D7D;
+    --teal-light: #3FA3A3;
+    --gold: #C9962A;
+    --gold-light: #F5DFA0;
+    --cream: #FAF7F2;
+    --white: #FFFFFF;
+    --gray-50: #F8F9FA;
+    --gray-100: #F0F2F5;
+    --gray-300: #CDD2D8;
+    --gray-500: #6B7280;
+    --gray-700: #374151;
+    --red: #C0392B;
+    --green: #1D6E4F;
+    --tab-h: 60px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--gray-700); }
+
+  /* ── NAV TABS ── */
+  #tabs {
+    position: fixed; bottom: 0; left: 0; right: 0; height: var(--tab-h);
+    background: var(--navy); display: flex; z-index: 100;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.25);
+  }
+  .tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.45); font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
+    cursor: pointer; transition: color 0.2s; padding: 4px 0; text-transform: uppercase;
+    border: none; background: none; gap: 3px;
+  }
+  .tab .icon { font-size: 20px; line-height: 1; }
+  .tab.active { color: var(--gold-light); }
+  .tab.active .icon { transform: scale(1.15); }
+
+  /* ── PAGES ── */
+  .page { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: var(--tab-h); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .page.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, var(--navy) 0%, #0D2440 50%, #1a4a4a 100%);
+    padding: 48px 20px 36px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,150,42,0.15) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,125,125,0.2) 0%, transparent 70%);
+  }
+  .hero-flag { font-size: 48px; display: block; margin-bottom: 12px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; color: var(--white); line-height: 1.1; }
+  .hero-sub { color: var(--gold-light); font-size: 13px; font-weight: 500; margin-top: 8px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-dates { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 6px; }
+  .time-strip { display: flex; justify-content: center; align-items: stretch; gap: 0; margin-top: 16px; background: rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden; }
+  .time-chip { flex: 1; text-align: center; padding: 10px 12px; }
+  .time-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+  .time-value { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--white); line-height: 1.1; margin-top: 3px; }
+  .time-ampm  { font-size: 12px; font-weight: 500; color: var(--gold-light); margin-left: 2px; }
+  .time-zone  { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .time-divider { width: 1px; background: rgba(255,255,255,0.12); margin: 8px 0; }
+
+  /* ── PROGRESS PILL ── */
+  .progress-strip {
+    background: var(--navy); padding: 12px 16px;
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  }
+  .progress-strip::-webkit-scrollbar { display: none; }
+  .day-pill {
+    flex-shrink: 0; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+    border: 1.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.55);
+    background: transparent;
+  }
+  .day-pill.today { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+  .day-pill.past { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); }
+  .day-pill.active-day { border-color: var(--teal-light); color: var(--teal-light); }
+
+  /* ── CONTENT ── */
+  .content { padding: 16px 16px 24px; }
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--teal); margin: 24px 0 10px; padding-left: 2px;
+  }
+  .section-label:first-child { margin-top: 8px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white); border-radius: 14px; margin-bottom: 10px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.07); overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer; user-select: none;
+  }
+  .card-icon { font-size: 22px; flex-shrink: 0; }
+  .card-title-group { flex: 1; min-width: 0; }
+  .card-title { font-size: 15px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-sub { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
+  .card-chevron { color: var(--gray-300); font-size: 16px; flex-shrink: 0; transition: transform 0.2s; }
+  .card.open .card-chevron { transform: rotate(90deg); }
+  .card-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--gray-100); }
+  .card.open .card-body { display: block; }
+
+  /* ── INFO ROWS ── */
+  .info-row { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+  .info-row:last-child { border-bottom: none; }
+  .info-key { font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px; min-width: 72px; flex-shrink: 0; padding-top: 1px; }
+  .info-val { font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+  .tip-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; padding-top: 10px; background: var(--gray-50); border-radius: 8px; padding: 10px 12px; margin-top: 4px; border-left: 3px solid var(--gold); }
+
+  /* ── FLIGHT CARD ── */
+  .flight-card { background: var(--white); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.07); }
+  .flight-header { background: linear-gradient(135deg, var(--navy), #2a5070); padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+  .flight-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--gold-light); }
+  .flight-route { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .flight-body { padding: 12px 16px; }
+
+  /* ── ITINERARY DAY ── */
+  .day-card { background: var(--white); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.07); }
+  .day-header { padding: 14px 16px; display: flex; gap: 12px; align-items: center; cursor: pointer; }
+  .day-badge { width: 44px; height: 44px; border-radius: 12px; background: var(--navy); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+  .day-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--white); line-height: 1; }
+  .day-label { font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-light); }
+  .day-info { flex: 1; }
+  .day-date { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; }
+  .day-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .day-hotel-badge { font-size: 11px; color: var(--teal); font-style: italic; margin-top: 2px; }
+  .day-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--gray-100); }
+  .day-card.open .day-body { display: block; }
+  .day-card.open .card-chevron { transform: rotate(90deg); }
+
+  /* ── CHECKLIST ── */
+  .check-section { margin-bottom: 4px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 12px; padding: 11px 16px;
+    border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background 0.15s;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item:active { background: var(--gray-50); }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--gray-300);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; margin-top: 1px;
+  }
+  .check-item.checked .check-box { background: var(--teal); border-color: var(--teal); }
+  .check-item.checked .check-box::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
+  .check-item.checked .check-text { text-decoration: line-through; color: var(--gray-300); }
+  .check-item.checked .check-note { color: var(--gray-300); }
+  .check-content { flex: 1; min-width: 0; }
+  .check-text { font-size: 14px; font-weight: 500; color: var(--gray-700); }
+  .check-note { font-size: 12px; color: var(--gray-500); margin-top: 2px; line-height: 1.4; }
+  .check-crit { color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .check-qty { font-size: 13px; font-weight: 700; color: var(--teal); margin-left: auto; flex-shrink: 0; padding-left: 8px; }
+  .check-group-header {
+    background: var(--gray-50); padding: 10px 16px; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--navy);
+    border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .pack-progress { padding: 14px 16px; background: var(--white); border-radius: 14px; margin-bottom: 10px; box-shadow: 0 1px 8px rgba(0,0,0,0.07); }
+  .pack-progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-500); margin-bottom: 8px; }
+  .pack-progress-label strong { color: var(--teal); }
+  .progress-bar { height: 8px; background: var(--gray-100); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-light)); border-radius: 99px; transition: width 0.4s ease; }
+
+  /* ── PLACES ── */
+  .place-card { background: var(--white); border-radius: 12px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+  .place-header { padding: 12px 14px; display: flex; gap: 10px; align-items: center; cursor: pointer; }
+  .place-emoji { font-size: 20px; flex-shrink: 0; }
+  .place-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .place-city { font-size: 11px; color: var(--gray-500); }
+  .place-entry { font-size: 12px; color: var(--green); font-weight: 500; margin-top: 1px; }
+  .place-body { display: none; padding: 0 14px 12px; border-top: 1px solid var(--gray-100); }
+  .place-card.open .place-body { display: block; }
+
+  /* ── BADGES ── */
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .badge-teal { background: rgba(46,125,125,0.1); color: var(--teal); }
+  .badge-gold { background: rgba(201,150,42,0.12); color: var(--gold); }
+  .badge-red { background: rgba(192,57,43,0.1); color: var(--red); }
+  .badge-navy { background: rgba(27,58,92,0.1); color: var(--navy); }
+
+  /* ── HOTEL CARD ── */
+  .hotel-accent { width: 4px; border-radius: 4px; }
+  .accent-hyatt { background: #1B3A5C; }
+  .accent-ic { background: #2E7D7D; }
+  .accent-sapa { background: #C9962A; }
+  .accent-sheraton { background: #1D6E4F; }
+  .accent-meridien { background: #7B3F9E; }
+
+  /* ── WEATHER STRIP ── */
+  .weather-strip { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 0 0 4px; }
+  .weather-strip::-webkit-scrollbar { display: none; }
+  .weather-chip { flex-shrink: 0; background: var(--white); border-radius: 10px; padding: 10px 14px; text-align: center; box-shadow: 0 1px 6px rgba(0,0,0,0.06); min-width: 90px; }
+  .weather-city { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-500); }
+  .weather-temp { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .weather-desc { font-size: 11px; color: var(--gray-500); margin-top: 1px; }
+  .weather-hl { display: flex; justify-content: space-between; gap: 4px; margin-top: 5px; border-top: 1px solid var(--gray-100); padding-top: 5px; }
+  .weather-high { font-size: 11px; font-weight: 700; color: #C0392B; text-align: center; flex: 1; }
+  .weather-low  { font-size: 11px; font-weight: 700; color: #2980B9; text-align: center; flex: 1; }
+  .weather-hum  { font-size: 11px; font-weight: 700; color: #8E44AD; text-align: center; flex: 1; }
+
+  /* ── EMERGENCY ── */
+  .emergency-card { background: rgba(192,57,43,0.06); border: 1.5px solid rgba(192,57,43,0.2); border-radius: 14px; padding: 16px; margin-bottom: 10px; }
+  .emergency-title { font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .emergency-row { font-size: 13px; color: var(--gray-700); padding: 5px 0; border-bottom: 1px solid rgba(192,57,43,0.1); display: flex; gap: 8px; }
+  .emergency-row:last-child { border-bottom: none; }
+  .emergency-key { font-weight: 600; min-width: 90px; flex-shrink: 0; }
+
+  /* ── TIPS ── */
+  .tip-card { background: var(--gold-light); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; border-left: 3px solid var(--gold); }
+  .tip-card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-bottom: 5px; }
+  .tip-card-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  /* RESET BUTTON */
+  .reset-btn { background: transparent; border: 1.5px solid var(--gray-300); border-radius: 8px; padding: 8px 16px; font-size: 13px; color: var(--gray-500); cursor: pointer; font-family: inherit; }
+  .reset-btn:active { background: var(--gray-100); }
+
+  /* Smooth scroll to section */
+  html { scroll-behavior: smooth; }
+  .scroll-top { position: fixed; bottom: calc(var(--tab-h) + 16px); right: 16px; width: 40px; height: 40px; background: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; cursor: pointer; box-shadow: 0 3px 12px rgba(0,0,0,0.25); opacity: 0; transition: opacity 0.3s; z-index: 99; border: none; }
+  .scroll-top.visible { opacity: 1; }
+  .jump-hotels { position: fixed; top: 14px; right: 16px; background: var(--gold); color: var(--navy); border: none; border-radius: 20px; padding: 7px 13px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-family: inherit; display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; }
+  .jump-hotels.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ TAB BAR ══════════════════════ -->
+<nav id="tabs">
+  <button class="tab active" onclick="showTab('itinerary')" id="tab-itinerary">
+    <span class="icon">🗓</span>Itinerary
+  </button>
+  <button class="tab" onclick="showTab('places')" id="tab-places">
+    <span class="icon">📍</span>Places
+  </button>
+  <button class="tab" onclick="showTab('packing')" id="tab-packing">
+    <span class="icon">🎒</span>Packing
+  </button>
+  <button class="tab" onclick="showTab('essentials')" id="tab-essentials">
+    <span class="icon">⚡</span>Essentials
+  </button>
+  <button class="tab" onclick="showTab('info')" id="tab-info">
+    <span class="icon">ℹ️</span>Info
+  </button>
+</nav>
+
+<!-- ══════════════════════ ITINERARY PAGE ══════════════════════ -->
+<div class="page active" id="page-itinerary">
+    <div class="hero">
+    <span class="hero-flag">🇻🇳</span>
+    <h1>Vietnam 2026</h1>
+    <div class="hero-sub">LAX → Da Nang → Sapa → Hanoi → Saigon</div>
+    <div class="hero-dates">April 1–13, 2026 · Starlux Airlines</div>
+    <div class="time-strip">
+      <div class="time-chip">
+        <div class="time-label">🇺🇸 Los Angeles</div>
+        <div class="time-value" id="clock-la">--:--<span class="time-ampm" id="ampm-la"></span></div>
+        <div class="time-zone" id="date-la">--</div>
+      </div>
+      <div class="time-divider"></div>
+      <div class="time-chip">
+        <div class="time-label">🇻🇳 Vietnam</div>
+        <div class="time-value" id="clock-vn">--:--<span class="time-ampm" id="ampm-vn"></span></div>
+        <div class="time-zone" id="date-vn">--</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- FLIGHTS -->
+    <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:2px">
+      <span>✈ Flight Status</span>
+      <button onclick="fetchAllFlights()" id="flight-refresh-btn" style="background:none;border:none;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--teal);cursor:pointer;font-family:inherit;padding:0">↻ Refresh</button>
+    </div>
+
+    <!-- API Key setup -->
+    <div id="flight-api-setup" style="display:none">
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px">🔑 AviationStack API Key <span style="font-weight:400;color:var(--gray-500)">(free at aviationstack.com)</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="flight-api-key" type="text" placeholder="Paste your free API key here…" style="flex:1;border:1.5px solid var(--gray-300);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;color:var(--gray-700);min-width:0">
+        <button onclick="saveApiKey()" style="background:var(--teal);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Save</button>
+      </div>
+      <div style="font-size:11px;color:var(--gray-500);margin-top:6px">Without a key, scheduled times are shown. With a key, live status updates automatically.</div>
+    </div>
+
+    <div id="flight-last-updated" style="font-size:11px;color:var(--gray-500);margin-bottom:8px;min-height:14px"></div>
+    <div id="flights-container"></div>
+
+    <style>
+      .flt-card { background:var(--white); border-radius:14px; margin-bottom:10px; overflow:hidden; box-shadow:0 1px 8px rgba(0,0,0,0.07); }
+      .flt-header { background:linear-gradient(135deg,var(--navy),#2a5070); padding:14px 16px; }
+      .flt-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+      .flt-num { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--gold-light); }
+      .flt-route { font-size:13px; color:rgba(255,255,255,0.65); margin-top:1px; }
+      .flt-status-badge { padding:4px 10px; border-radius:99px; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
+      .status-scheduled  { background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.8); }
+      .status-boarding   { background:#F5DFA0; color:#7A5C00; }
+      .status-departed   { background:#D0ECEC; color:#1a5555; }
+      .status-enroute    { background:#4CAF50; color:white; }
+      .status-landed     { background:#D0ECEC; color:#1a5555; }
+      .status-arrived    { background:#D0ECEC; color:#1a5555; }
+      .status-delayed    { background:#FFE0CC; color:#8B3A00; }
+      .status-cancelled  { background:#FFCCCC; color:#8B0000; }
+      .flt-airports { display:flex; align-items:center; gap:6px; }
+      .flt-airport { text-align:center; }
+      .flt-iata { font-size:18px; font-weight:700; color:white; font-family:'Playfair Display',serif; }
+      .flt-time { font-size:12px; color:rgba(255,255,255,0.6); }
+      .flt-time.actual { color:var(--gold-light); font-weight:600; }
+      .flt-divider { flex:1; display:flex; align-items:center; gap:4px; padding:0 4px; }
+      .flt-line { flex:1; height:1px; background:rgba(255,255,255,0.25); }
+      .flt-plane { font-size:14px; }
+      .flt-body { padding:12px 16px; }
+      .flt-progress-wrap { margin-bottom:10px; }
+      .flt-progress-label { display:flex; justify-content:space-between; font-size:11px; color:var(--gray-500); margin-bottom:5px; }
+      .flt-progress-label span:last-child { font-weight:600; color:var(--teal); }
+      .flt-progress-bar { height:7px; background:var(--gray-100); border-radius:99px; overflow:hidden; }
+      .flt-progress-fill { height:100%; border-radius:99px; transition:width 0.8s ease; background:linear-gradient(90deg,var(--teal),var(--teal-light)); }
+      .flt-progress-fill.delayed { background:linear-gradient(90deg,#E67E22,#F39C12); }
+      .flt-progress-fill.arrived { background:linear-gradient(90deg,var(--green),#27AE60); }
+    </style>
+
+    <script>
+    const FLIGHTS_DATA = [
+      { num:'JX1',  iata:'JX1',  dep:'LAX', arr:'TPE', depDate:'2026-04-01', depSched:'Apr 1 · 12:35am', arrSched:'Apr 2 · 5:40am',  route:'LAX → Taipei (TPE)',   terminal:'Terminal B — Starlux check-in, LAX', tip:'Check in 3 hrs early. Overnight flight — neck pillow & noise-cancelling headphones essential.' },
+      { num:'JX703',iata:'JX703',dep:'TPE', arr:'DAD', depDate:'2026-04-02', depSched:'Apr 2 · 5:35pm',  arrSched:'~8:00pm',           route:'Taipei → Da Nang (DAD)', terminal:'Terminal 2 — Starlux hub, Taoyuan Airport', tip:'~12 hr layover in Taipei. Consider exploring the city or rest at an airport hotel.' },
+      { num:'JX712',iata:'JX712',dep:'SGN', arr:'TPE', depDate:'2026-04-13', depSched:'Apr 13 · 11:30am',arrSched:'4:00pm',            route:'HCMC (SGN) → Taipei',   terminal:'Tan Son Nhat International (SGN), Tan Binh District', tip:'Request late checkout from Le Méridien (~10am). Grab to airport = ~20–30 min from District 1.' },
+      { num:'JX10', iata:'JX10', dep:'TPE', arr:'ONT', depDate:'2026-04-13', depSched:'Apr 13 · 8:05pm', arrSched:'5:05pm same day',   route:'Taipei → Ontario CA (ONT)', terminal:'Ontario International Airport (ONT)', tip:'Crosses the International Date Line eastbound — you arrive before you depart by the clock!' },
+    ];
+
+    let flightApiKey = '5aade9a9af485ccf58f562e1339f05bd';
+
+    function saveApiKey() {
+      const val = document.getElementById('flight-api-key').value.trim();
+      if (!val) return;
+      flightApiKey = val;
+      document.getElementById('flight-api-setup').style.display = 'none';
+      fetchAllFlights();
+    }
+
+    function flightProgress(status, depTime, arrTime) {
+      if (!depTime || !arrTime) {
+        const s = (status || '').toLowerCase();
+        if (s === 'scheduled') return 0;
+        if (s === 'boarding') return 5;
+        if (s === 'departed' || s === 'active' || s === 'en-route') return 50;
+        if (s === 'landed' || s === 'arrived') return 100;
+        return 0;
+      }
+      const now = Date.now();
+      const dep = new Date(depTime).getTime();
+      const arr = new Date(arrTime).getTime();
+      if (now <= dep) return 0;
+      if (now >= arr) return 100;
+      return Math.round((now - dep) / (arr - dep) * 100);
+    }
+
+    function statusClass(status) {
+      const s = (status || 'scheduled').toLowerCase();
+      if (s === 'boarding') return 'status-boarding';
+      if (s === 'active' || s === 'en-route' || s === 'departed') return 'status-enroute';
+      if (s === 'landed') return 'status-landed';
+      if (s === 'arrived') return 'status-arrived';
+      if (s === 'delayed') return 'status-delayed';
+      if (s === 'cancelled') return 'status-cancelled';
+      return 'status-scheduled';
+    }
+
+    function statusLabel(status) {
+      const s = (status || 'Scheduled');
+      return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    }
+
+    function progressClass(status) {
+      const s = (status || '').toLowerCase();
+      if (s === 'delayed') return 'delayed';
+      if (s === 'arrived' || s === 'landed') return 'arrived';
+      return '';
+    }
+
+    function renderFlight(f, liveData) {
+      const status   = liveData ? liveData.flight_status : 'scheduled';
+      const depActual = liveData ? liveData.departure?.actual : null;
+      const arrActual = liveData ? liveData.arrival?.actual   : null;
+      const depEst    = liveData ? (liveData.departure?.estimated || liveData.departure?.scheduled) : null;
+      const arrEst    = liveData ? (liveData.arrival?.estimated  || liveData.arrival?.scheduled)   : null;
+      const gate      = liveData ? liveData.departure?.gate   : null;
+      const terminal  = liveData ? liveData.departure?.terminal : null;
+      const delay     = liveData ? liveData.departure?.delay : null;
+
+      const pct = flightProgress(status, depActual || depEst, arrActual || arrEst);
+      const sc  = statusClass(status);
+      const pc  = progressClass(status);
+
+      const fmtTime = (iso) => {
+        if (!iso) return null;
+        const d = new Date(iso);
+        return d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+      };
+
+      const depDisplay = fmtTime(depActual) || fmtTime(depEst) || f.depSched;
+      const arrDisplay = fmtTime(arrActual) || fmtTime(arrEst) || f.arrSched;
+      const depIsActual = !!(depActual || depEst);
+      const arrIsActual = !!(arrActual || arrEst);
+
+      const progressLabel = status === 'scheduled' ? 'Not yet departed'
+        : status === 'boarding' ? 'Boarding now'
+        : (status === 'landed' || status === 'arrived') ? '✓ Arrived'
+        : `In flight — ${pct}%`;
+
+      return `
+        <div class="flt-card">
+          <div class="flt-header">
+            <div class="flt-top">
+              <div><div class="flt-num">${f.num}</div><div class="flt-route">${f.route}</div></div>
+              <div class="flt-status-badge ${sc}">${statusLabel(status)}</div>
+            </div>
+            <div class="flt-airports">
+              <div class="flt-airport">
+                <div class="flt-iata">${f.dep}</div>
+                <div class="flt-time ${depIsActual ? 'actual' : ''}">${depDisplay}</div>
+              </div>
+              <div class="flt-divider"><div class="flt-line"></div><div class="flt-plane">✈</div><div class="flt-line"></div></div>
+              <div class="flt-airport">
+                <div class="flt-iata">${f.arr}</div>
+                <div class="flt-time ${arrIsActual ? 'actual' : ''}">${arrDisplay}</div>
+              </div>
+            </div>
+          </div>
+          <div class="flt-body">
+            <div class="flt-progress-wrap">
+              <div class="flt-progress-label"><span>${progressLabel}</span>${delay ? `<span>+${delay} min delay</span>` : '<span></span>'}</div>
+              <div class="flt-progress-bar"><div class="flt-progress-fill ${pc}" style="width:${pct}%"></div></div>
+            </div>
+            <div class="info-row"><div class="info-key">Terminal</div><div class="info-val">${terminal ? `Terminal ${terminal}` : ''} ${gate ? `· Gate ${gate}` : ''} ${(!terminal && !gate) ? f.terminal : ''}</div></div>
+            <div class="info-row"><div class="info-key">Tip</div><div class="info-val">${f.tip}</div></div>
+            ${liveData ? '' : ''}
+          </div>
+        </div>`;
+    }
+
+    function renderAllFlights(liveMap) {
+      const container = document.getElementById('flights-container');
+      container.innerHTML = FLIGHTS_DATA.map(f => renderFlight(f, liveMap ? liveMap[f.num] : null)).join('');
+    }
+
+    async function fetchAllFlights() {
+      const btn = document.getElementById('flight-refresh-btn');
+      const lastUpdEl = document.getElementById('flight-last-updated');
+      btn.textContent = '↻ Updating…';
+      btn.style.opacity = '0.5';
+
+      if (!flightApiKey) {
+        renderAllFlights(null);
+        lastUpdEl.textContent = 'Showing scheduled times — enter API key for live data';
+        lastUpdEl.style.color = 'var(--gray-500)';
+        btn.textContent = '↻ Refresh';
+        btn.style.opacity = '1';
+        return;
+      }
+
+      const liveMap = {};
+      let anySuccess = false;
+
+      await Promise.all(FLIGHTS_DATA.map(async f => {
+        try {
+          const url = `https://api.aviationstack.com/v1/flights?access_key=${flightApiKey}&flight_iata=${f.iata}&flight_date=${f.depDate}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (data.data && data.data.length > 0) {
+            liveMap[f.num] = data.data[0];
+            anySuccess = true;
+          }
+        } catch(e) { /* silent fail */ }
+      }));
+
+      renderAllFlights(anySuccess ? liveMap : null);
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+      const dateStr = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+
+      if (anySuccess) {
+        lastUpdEl.textContent = '✓ Live data · Last updated ' + dateStr + ' · ' + timeStr;
+        lastUpdEl.style.color = 'var(--teal)';
+      } else {
+        lastUpdEl.textContent = '⚠ Could not fetch live data · Last updated ' + dateStr + ' · ' + timeStr;
+        lastUpdEl.style.color = 'var(--gold)';
+      }
+
+      btn.textContent = '↻ Refresh';
+      btn.style.opacity = '1';
+    }
+
+    // Auto-fetch live data on load
+    renderAllFlights(null);
+    fetchAllFlights();
+    </script>
+
+    <!-- DAILY ITINERARY -->
+    <div class="section-label">📅 Daily Plan</div>
+
+    <script>
+    const days = [
+      { n:1, date:'Apr 1, Wed', title:'Depart LAX', hotel:'In Transit', icon:'✈', color:'#1B3A5C',
+        notes:'Check in at LAX Terminal B (Starlux) 3 hrs before 12:35am departure. Grab a neck pillow and load up your earbuds. The overnight flight is ~14 hrs to Taipei. Try to sleep — Vietnam time is 15 hrs ahead of Ontario.' },
+      { n:2, date:'Apr 2, Thu', title:'Taipei Layover → Da Nang', hotel:'Hyatt Regency Da Nang', icon:'🏨', color:'#2E7D7D',
+        notes:'Land Taipei 5:40am. ~12hr layover — consider leaving the airport to see the city (MRT into Taipei ~40min). Depart Taipei Terminal 2 at 5:35pm on JX703. Arrive Da Nang ~8pm. Grab to Hyatt ~$7. Confirm late check-in.' },
+      { n:3, date:'Apr 3, Fri', title:'Da Nang — Beach Day', hotel:'Hyatt Regency Da Nang', icon:'🏖', color:'#1B3A5C',
+        notes:'Recover from the journey. Non Nuoc Beach is steps from the hotel. Hit the pool, eat a Vietnamese breakfast (bánh mì or phở). Optional: Marble Mountains are only 5 min away — go early before tour buses arrive (opens 7am, entry ~$2).' },
+      { n:4, date:'Apr 4, Sat', title:'Da Nang → InterContinental', hotel:'InterContinental Sun Peninsula', icon:'🌊', color:'#2E7D7D',
+        notes:'Morning: Hoi An day trip (~35min by Grab). UNESCO Ancient Town — go afternoon/evening for lantern light on the river. Try Cao Lau noodles. Book a tailor for custom clothes (48hr). Check into InterContinental by evening. Book the spa immediately upon arrival.' },
+      { n:5, date:'Apr 5, Sun', title:'Da Nang → Travel to Sapa', hotel:'In Transit', icon:'🚂', color:'#C9962A',
+        notes:'Fly Da Nang → Hanoi (~1hr, ~$30-60 on VN Airlines or Bamboo). Then board the overnight train Hanoi → Lao Cai (Livitrans or Victoria Express — MUST book in advance, sells out). 8hr overnight train. Bring snacks and your sleep kit.' },
+      { n:6, date:'Apr 6, Mon', title:'Arrive Sapa', hotel:'Hotel de la Coupole MGallery', icon:'🏔', color:'#1D6E4F',
+        notes:'Arrive Lao Cai station ~6am. 30min van up to Sapa. Check in and rest. Afternoon: explore Sapa market and town center — it\'s walking distance from the hotel. Try H\'mong dishes at a local restaurant. Temp ~59-72°F, bring your layers.' },
+      { n:7, date:'Apr 7, Tue', title:'Sapa Trekking Day', hotel:'Hotel de la Coupole MGallery', icon:'🥾', color:'#1D6E4F',
+        notes:'Full day: Cat Cat Village walk (~45min down through rice terraces, xe om back up ~$2) or hire a local H\'mong guide for a longer trek. Afternoon: Fansipan cable car — buy tickets online in advance (~$30 round trip). Summit at 3,143m = bring the down jacket.' },
+      { n:8, date:'Apr 8, Wed', title:'Sapa → Hanoi', hotel:'Sheraton Hanoi West', icon:'🏛', color:'#1B3A5C',
+        notes:'Van back down to Lao Cai, then train or drive to Hanoi (~3.5hrs). Arrive at Sheraton West (Tay Ho/West Lake district). Easy arrival day — West Lake walk in the evening is beautiful. Try bún chả for dinner near the Old Quarter.' },
+      { n:9, date:'Apr 9, Thu', title:'Hanoi + Ninh Binh Day Trip', hotel:'Sheraton Hanoi West', icon:'⛵', color:'#1B3A5C',
+        notes:'Early start: private car to Ninh Binh (~2hrs, ~$40-60 for the day). Trang An boat tour through caves (2-3hrs), then Mua Cave 500-step climb for the panoramic view — go before 9am to beat crowds. Back in Hanoi by evening: Hoan Kiem Lake at dusk and egg coffee at Giang\'s (39 Nguyen Huu Huan, head upstairs).' },
+      { n:10, date:'Apr 10, Fri', title:'Ha Long Bay → Fly Saigon', hotel:'Le Méridien Saigon', icon:'⛵', color:'#2E7D7D',
+        notes:'Optional Ha Long Bay overnight cruise (depart ~8am from Tuan Chau Marina, ~3.5hrs from Hanoi). OR use the morning for Hanoi Old Quarter. Fly Hanoi → HCMC (~2hrs, ~$30-50). Check into Le Méridien — rooftop bar has stunning Saigon River views.' },
+      { n:11, date:'Apr 11, Sat', title:'Ho Chi Minh City', hotel:'Le Méridien Saigon', icon:'🏙', color:'#7B3F9E',
+        notes:'Morning: War Remnants Museum (opens 7:30am, plan 2-3hrs, 3rd floor Agent Orange exhibit is unmissable). Reunification Palace is 5 min walk from hotel (opens 8am). Afternoon: Cu Chi Tunnels (~1.5hr by car, leave by 7:30am to beat heat — or do this day). Evening: Bui Vien Walking Street.' },
+      { n:12, date:'Apr 12, Sun', title:'Saigon — Markets & Eats', hotel:'Le Méridien Saigon', icon:'🛍', color:'#7B3F9E',
+        notes:'Ben Thanh Market (10min walk — negotiate everything, start at 40% of asking). Nguyen Hue Walking Street is 5min from hotel. Try pho for breakfast at a street stall. Optional afternoon: cooking class or Mekong Delta day trip. Final dinner at a rooftop restaurant with river views.' },
+      { n:13, date:'Apr 13, Mon', title:'Depart HCMC → Home', hotel:'Homebound! 🎉', icon:'🏡', color:'#C9962A',
+        notes:'Request late checkout (hold room until ~10am). JX712 departs 11:30am — Grab to airport ~25min from District 1, leave hotel by 9am. Taipei layover then JX10 departs 8:05pm. Cross the date line — arrive Ontario 5:05pm same calendar day. Welcome home!' },
+    ];
+    </script>
+
+    <div id="days-container"></div>
+
+    <!-- HOTELS QUICK REF -->
+    <div class="section-label" id="hotels-section">🏨 Hotels</div>
+
+    <div id="hotels-container"></div>
+
+    <script>
+    const hotels = [
+      { name:'Hyatt Regency Da Nang Resort & Spa', dates:'Apr 2–4', addr:'5 Truong Sa, Hoa Hai Ward, Da Nang', loc:'Non Nuoc Beach — 10km south of city, directly on beach', transport:'Grab from airport ~$7, 20–25 min', tip:'Beachfront resort, multiple pools, direct beach access. Confirm late check-in — your flight lands ~8pm.', accent:'accent-hyatt' },
+      { name:'InterContinental Sun Peninsula', dates:'Apr 4–5', addr:'Bãi Bắc, Sơn Trà Peninsula, Da Nang', loc:'Clifftop jungle setting, ~20 min north of Da Nang', transport:'Grab from Hyatt ~30–35 min', tip:'Top 10 resort in SEA. Designed by Bill Bensley — gondola lifts, infinity pools over the East Sea. Book spa IMMEDIATELY on check-in.', accent:'accent-ic' },
+      { name:'Hotel de la Coupole MGallery', dates:'Apr 6–8', addr:'1 Hoang Lien, Sa Pa Town, Lao Cai Province', loc:'Center of Sapa — walking to market, cable car station', transport:'30 min van from Lao Cai train station', tip:'French-colonial meets H\'mong textile motifs. Request Fansipan Mountain view room. Fireplace perfect for cool evenings (~15–22°C).', accent:'accent-sapa' },
+      { name:'Sheraton Hanoi West', dates:'Apr 8–10', addr:'508 Lac Long Quan, Tay Ho District, Hanoi', loc:'West Lake shores — upscale expat area, ~20–25 min from Old Quarter', transport:'Grab from Lao Cai/train station, plan easy arrival day', tip:'Perfect base for Old Quarter, Ninh Binh day trip, and Ha Long departure. West Lake morning walks are beautiful.', accent:'accent-sheraton' },
+      { name:'Le Méridien Saigon', dates:'Apr 10–13', addr:'3C Ton Duc Thang, Ben Nghe Ward, District 1, HCMC', loc:'Saigon River waterfront — heart of District 1, walking to everything', transport:'Grab from Noi Bai airport ~$30, or from Tan Son Nhat ~$5', tip:'Rooftop bar with stunning river views. Walking distance to Reunification Palace, War Remnants Museum, Ben Thanh. REQUEST LATE CHECKOUT for Apr 13 (flight 11:30am).', accent:'accent-meridien' },
+    ];
+    </script>
+
+  </div>
+</div>
+
+<!-- ══════════════════════ PLACES PAGE ══════════════════════ -->
+<div class="page" id="page-places">
+  <div style="background:linear-gradient(135deg,var(--teal),#1a5555);padding:28px 20px 20px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">📍</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white">Places & Activities</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px">Tap any place for details & tips</div>
+  </div>
+  <div class="content">
+    <div id="places-container"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PACKING PAGE ══════════════════════ -->
+<div class="page" id="page-packing">
+  <div style="background:linear-gradient(135deg,#1D6E4F,#145238);padding:28px 20px 20px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">👕</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white">Clothing Checklist</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px">Tap items to check off as you pack</div>
+  </div>
+  <div class="content">
+    <div style="background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 8px rgba(0,0,0,0.07);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div style="font-size:13px;color:var(--gray-500)">Laundry on <strong style="color:var(--teal)">Day 7</strong> at Sheraton Hanoi West</div>
+      <button class="reset-btn" onclick="resetChecks('clothing')">Reset</button>
+    </div>
+    <div class="pack-progress">
+      <div class="pack-progress-label"><span>Clothing packed</span><strong id="clothing-count">0 / 0</strong></div>
+      <div class="progress-bar"><div class="progress-fill" id="clothing-bar" style="width:0%"></div></div>
+    </div>
+    <div id="clothing-container"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ ESSENTIALS PAGE ══════════════════════ -->
+<div class="page" id="page-essentials">
+  <div style="background:linear-gradient(135deg,#8B2500,#C0392B);padding:28px 20px 20px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">⚡</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white">Essentials Checklist</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px">★ CRITICAL items — pack these first</div>
+  </div>
+  <div class="content">
+    <div style="background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 8px rgba(0,0,0,0.07);display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:13px;color:var(--gray-500)">Tap ★ items first — they're mission critical</div>
+      <button class="reset-btn" onclick="resetChecks('essentials')">Reset</button>
+    </div>
+    <div class="pack-progress">
+      <div class="pack-progress-label"><span>Essentials packed</span><strong id="essentials-count">0 / 0</strong></div>
+      <div class="progress-bar"><div class="progress-fill" id="essentials-bar" style="width:0%"></div></div>
+    </div>
+    <div id="essentials-container"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ INFO PAGE ══════════════════════ -->
+<div class="page" id="page-info">
+  <div style="background:linear-gradient(135deg,#2C1654,#4A2080);padding:28px 20px 20px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">ℹ️</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white">Travel Info</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px">Tips, money, safety & contacts</div>
+  </div>
+  <div class="content">
+
+    <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:2px">
+      <span>🌡 Current Weather</span>
+      <button onclick="fetchWeather()" id="weather-refresh-btn" style="background:none;border:none;font-size:14px;cursor:pointer;color:var(--teal);padding:0;font-family:inherit;font-weight:600;letter-spacing:0.5px;font-size:10px;text-transform:uppercase">↻ Refresh</button>
+    </div>
+    <div id="weather-status" style="font-size:11px;color:var(--gray-500);margin-bottom:8px;min-height:14px"></div>
+    <div class="weather-strip" id="weather-strip">
+      <div class="weather-chip"><div class="weather-city">Da Nang</div><div class="weather-temp" id="w-danang">--°F</div><div class="weather-desc" id="wd-danang">Loading…</div><div class="weather-hl"><span class="weather-low" id="wl-danang">L --</span><span class="weather-high" id="wh-danang">H --</span><span class="weather-hum" id="whu-danang">-- 💧</span></div></div>
+      <div class="weather-chip"><div class="weather-city">Sapa</div><div class="weather-temp" id="w-sapa">--°F</div><div class="weather-desc" id="wd-sapa">Loading…</div><div class="weather-hl"><span class="weather-low" id="wl-sapa">L --</span><span class="weather-high" id="wh-sapa">H --</span><span class="weather-hum" id="whu-sapa">-- 💧</span></div></div>
+      <div class="weather-chip"><div class="weather-city">Hanoi</div><div class="weather-temp" id="w-hanoi">--°F</div><div class="weather-desc" id="wd-hanoi">Loading…</div><div class="weather-hl"><span class="weather-low" id="wl-hanoi">L --</span><span class="weather-high" id="wh-hanoi">H --</span><span class="weather-hum" id="whu-hanoi">-- 💧</span></div></div>
+      <div class="weather-chip"><div class="weather-city">Saigon</div><div class="weather-temp" id="w-saigon">--°F</div><div class="weather-desc" id="wd-saigon">Loading…</div><div class="weather-hl"><span class="weather-low" id="wl-saigon">L --</span><span class="weather-high" id="wh-saigon">H --</span><span class="weather-hum" id="whu-saigon">-- 💧</span></div></div>
+      <div class="weather-chip"><div class="weather-city">Taipei</div><div class="weather-temp" id="w-taipei">--°F</div><div class="weather-desc" id="wd-taipei">Loading…</div><div class="weather-hl"><span class="weather-low" id="wl-taipei">L --</span><span class="weather-high" id="wh-taipei">H --</span><span class="weather-hum" id="whu-taipei">-- 💧</span></div></div>
+    </div>
+    <script>
+    const WEATHER_CITIES = [
+      { id:'danang',  name:'Da Nang', lat:16.0544, lon:108.2022 },
+      { id:'sapa',    name:'Sapa',    lat:22.3364, lon:103.8438 },
+      { id:'hanoi',   name:'Hanoi',   lat:21.0285, lon:105.8542 },
+      { id:'saigon',  name:'Saigon',  lat:10.8231, lon:106.6297 },
+      { id:'taipei',  name:'Taipei',  lat:25.0330, lon:121.5654 },
+    ];
+    const WMO_DESC = {
+      0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+      45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+      61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
+      80:'Rain showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'
+    };
+    function wmoDesc(code) { return WMO_DESC[code] || 'Unknown'; }
+    function cToF(c) { return Math.round(c * 9/5 + 32); }
+
+    async function fetchWeather() {
+      const btn = document.getElementById('weather-refresh-btn');
+      const status = document.getElementById('weather-status');
+      btn.textContent = '↻ Updating…';
+      btn.style.opacity = '0.5';
+      status.textContent = 'Fetching live data…';
+
+      let anySuccess = false;
+      await Promise.all(WEATHER_CITIES.map(async city => {
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,weathercode,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto&forecast_days=1`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          const tempF = Math.round(data.current.temperature_2m);
+          const desc = wmoDesc(data.current.weathercode);
+          const high = data.daily?.temperature_2m_max?.[0] ? Math.round(data.daily.temperature_2m_max[0]) + '°F' : '--';
+          const low  = data.daily?.temperature_2m_min?.[0] ? Math.round(data.daily.temperature_2m_min[0]) + '°F' : '--';
+          const hum  = data.current?.relative_humidity_2m != null ? data.current.relative_humidity_2m + '%' : '--';
+          document.getElementById('w-'   + city.id).textContent = tempF + '°F';
+          document.getElementById('wd-'  + city.id).textContent = desc;
+          document.getElementById('wh-'  + city.id).textContent = 'H ' + high;
+          document.getElementById('wl-'  + city.id).textContent = 'L ' + low;
+          document.getElementById('whu-' + city.id).textContent = hum + ' 💧';
+          anySuccess = true;
+        } catch(e) {
+          // leave as cached or fallback
+        }
+      }));
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+      const dateStr = now.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+
+      if (anySuccess) {
+        const saved = { time: timeStr + ' · ' + dateStr };
+        WEATHER_CITIES.forEach(city => {
+          saved['temp_' + city.id] = document.getElementById('w-'   + city.id).textContent;
+          saved['desc_' + city.id] = document.getElementById('wd-'  + city.id).textContent;
+          saved['high_' + city.id] = document.getElementById('wh-'  + city.id).textContent;
+          saved['low_'  + city.id] = document.getElementById('wl-'  + city.id).textContent;
+          saved['hum_'  + city.id] = document.getElementById('whu-' + city.id).textContent;
+        });
+        localStorage.setItem('weather_cache', JSON.stringify(saved));
+        status.textContent = '✓ Live data · Last updated ' + timeStr + ' · ' + dateStr;
+        status.style.color = 'var(--teal)';
+      } else {
+        status.textContent = '⚠ No connection — showing last saved data';
+        status.style.color = 'var(--gold)';
+        loadCachedWeather();
+      }
+
+      btn.textContent = '↻ Refresh';
+      btn.style.opacity = '1';
+    }
+
+    function loadCachedWeather() {
+      const cached = localStorage.getItem('weather_cache');
+      if (!cached) {
+        // Ultimate fallback: April averages
+        const fallback = {
+          danang:  { temp:'84°F', desc:'Hot, humid (avg)',   high:'91°F', low:'77°F', hum:'83% 💧' },
+          sapa:    { temp:'64°F', desc:'Cool, misty (avg)',  high:'72°F', low:'55°F', hum:'78% 💧' },
+          hanoi:   { temp:'81°F', desc:'Warm, humid (avg)',  high:'88°F', low:'73°F', hum:'80% 💧' },
+          saigon:  { temp:'95°F', desc:'Hot & sunny (avg)',  high:'97°F', low:'79°F', hum:'68% 💧' },
+          taipei:  { temp:'72°F', desc:'Mild (avg)',         high:'78°F', low:'66°F', hum:'75% 💧' },
+        };
+        WEATHER_CITIES.forEach(city => {
+          document.getElementById('w-'   + city.id).textContent = fallback[city.id].temp;
+          document.getElementById('wd-'  + city.id).textContent = fallback[city.id].desc;
+          document.getElementById('wh-'  + city.id).textContent = 'H ' + fallback[city.id].high;
+          document.getElementById('wl-'  + city.id).textContent = 'L ' + fallback[city.id].low;
+          document.getElementById('whu-' + city.id).textContent = fallback[city.id].hum;
+        });
+        const status = document.getElementById('weather-status');
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+        const dateStr = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+        status.textContent = 'Showing April averages — tap Refresh for live data · Last updated ' + dateStr + ' ' + timeStr;
+        status.style.color = 'var(--gray-500)';
+        return;
+      }
+      const data = JSON.parse(cached);
+      WEATHER_CITIES.forEach(city => {
+        if (data['temp_' + city.id]) document.getElementById('w-'   + city.id).textContent = data['temp_' + city.id];
+        if (data['desc_' + city.id]) document.getElementById('wd-'  + city.id).textContent = data['desc_' + city.id];
+        if (data['high_' + city.id]) document.getElementById('wh-'  + city.id).textContent = data['high_' + city.id];
+        if (data['low_'  + city.id]) document.getElementById('wl-'  + city.id).textContent = data['low_'  + city.id];
+        if (data['hum_'  + city.id]) document.getElementById('whu-' + city.id).textContent = data['hum_'  + city.id];
+      });
+      const status = document.getElementById('weather-status');
+      status.textContent = '📵 Offline · Last updated ' + (data.time || 'unknown');
+      status.style.color = 'var(--gold)';
+    }
+
+    // Auto-fetch on load, fall back to cache if offline
+    fetchWeather().catch(() => loadCachedWeather());
+    </script>
+
+    <div class="section-label">🚨 Emergency Contacts</div>
+    <div class="emergency-card">
+      <div class="emergency-title">🆘 Emergency Numbers</div>
+      <div class="emergency-row"><div class="emergency-key">Vietnam Police</div><div>113</div></div>
+      <div class="emergency-row"><div class="emergency-key">Ambulance</div><div>115</div></div>
+      <div class="emergency-row"><div class="emergency-key">Fire</div><div>114</div></div>
+      <div class="emergency-row"><div class="emergency-key">US Embassy Hanoi</div><div>+84-24-3850-5000</div></div>
+      <div class="emergency-row"><div class="emergency-key">US Consulate HCMC</div><div>+84-28-3520-4200</div></div>
+    </div>
+
+    <div class="section-label">💰 Money & Payments</div>
+    <div class="tip-card">
+      <div class="tip-card-title">💵 Cash & Currency</div>
+      <div class="tip-card-text">Bring <strong>$200–300 USD in crisp, clean bills</strong> — exchange in Vietnam for best rate. Avoid airport exchanges. ATMs dispense VND (Vietnamese Dong). $1 USD ≈ 25,000 VND. Use Amex for hotel charges.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-title">📱 Grab App</div>
+      <div class="tip-card-text">Install <strong>Grab</strong> before departure — it's the Uber/Lyft of Southeast Asia. Use for all transport in Saigon, Hanoi, and Da Nang. Pay cash or card. Always cheaper and safer than waving down a random cab.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-title">💬 Bargaining</div>
+      <div class="tip-card-text">At markets (Ben Thanh, etc.) <strong>start at 40–50% of the asking price</strong>. It's expected and friendly. Never aggressive — always smile. If you don't want it, don't start bargaining.</div>
+    </div>
+
+    <div class="section-label">🍜 Must-Eat Foods</div>
+    <div class="card" style="cursor:default">
+      <div style="padding:14px 16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:var(--gray-50);border-radius:10px;padding:10px 12px">
+            <div style="font-size:12px;font-weight:700;color:var(--teal)">Da Nang / Hoi An</div>
+            <div style="font-size:13px;margin-top:4px;color:var(--gray-700)">Cao Lầu noodles · Mì Quảng · White rose dumplings · Bánh mì</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:10px;padding:10px 12px">
+            <div style="font-size:12px;font-weight:700;color:var(--teal)">Sapa</div>
+            <div style="font-size:13px;margin-top:4px;color:var(--gray-700)">Thắng cố (hot pot) · Smoked buffalo · H'mong corn wine</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:10px;padding:10px 12px">
+            <div style="font-size:12px;font-weight:700;color:var(--teal)">Hanoi</div>
+            <div style="font-size:13px;margin-top:4px;color:var(--gray-700)">Phở · Bún chả · Egg coffee · Bún bò Nam Bộ</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:10px;padding:10px 12px">
+            <div style="font-size:12px;font-weight:700;color:var(--teal)">Saigon</div>
+            <div style="font-size:13px;margin-top:4px;color:var(--gray-700)">Bánh xèo · Cơm tấm · Hủ tiếu · Street phở</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">📱 Apps to Install</div>
+    <div class="card" style="cursor:default">
+      <div style="padding:14px 16px;">
+        <div class="info-row"><div class="info-key">Grab</div><div class="info-val">Ride-hailing + food delivery across all cities</div></div>
+        <div class="info-row"><div class="info-key">Google Translate</div><div class="info-val">Download Vietnamese offline pack — camera mode is game-changing for menus</div></div>
+        <div class="info-row"><div class="info-key">Maps.me</div><div class="info-val">Download Vietnam offline map — works without internet</div></div>
+        <div class="info-row"><div class="info-key">Airalo</div><div class="info-val">Buy Vietnam eSIM before departure</div></div>
+        <div class="info-row"><div class="info-key">XE Currency</div><div class="info-val">Real-time VND conversion so you know what you're spending</div></div>
+      </div>
+    </div>
+
+    <div class="section-label">⚡ Power</div>
+    <div class="tip-card">
+      <div class="tip-card-title">🔌 Vietnam Power</div>
+      <div class="tip-card-text"><strong>220V, Type A/C/F outlets.</strong> Your universal adapter covers all of these. Your Uniqlo down jacket and most electronics auto-switch voltage. Check your electric razor — must be dual-voltage (100–240V).</div>
+    </div>
+
+    <div class="section-label">🌍 Jet Lag</div>
+    <div class="tip-card">
+      <div class="tip-card-title">😴 Time Difference</div>
+      <div class="tip-card-text">Vietnam (ICT) is <strong>+15 hrs ahead of Ontario, CA (PDT)</strong>. Take 0.5–1mg melatonin on the plane and stay up until 10pm local time on arrival night. Sunlight exposure in the morning accelerates adjustment.</div>
+    </div>
+
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SCROLL TO TOP ══════════════════════ -->
+<button class="jump-hotels" id="jumpHotels" onclick="jumpToHotels()">🏨 Hotels ↓</button>
+<button class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</button>
+
+<script>
+// ─── RENDER DAYS ───
+const daysContainer = document.getElementById('days-container');
+days.forEach(d => {
+  const el = document.createElement('div');
+  el.className = 'day-card';
+  el.innerHTML = `
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-badge" style="background:${d.color}">
+        <div class="day-num">${d.n}</div>
+        <div class="day-label">Day</div>
+      </div>
+      <div class="day-info">
+        <div class="day-date">${d.date}</div>
+        <div class="day-title">${d.icon} ${d.title}</div>
+        <div class="day-hotel-badge">${d.hotel}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="day-body">
+      <div class="tip-text" style="margin-top:12px">${d.notes}</div>
+    </div>`;
+  daysContainer.appendChild(el);
+});
+
+// ─── RENDER HOTELS ───
+const hotelsContainer = document.getElementById('hotels-container');
+hotels.forEach(h => {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="hotel-accent ${h.accent}" style="width:4px;height:44px;border-radius:4px;flex-shrink:0"></div>
+      <div class="card-title-group">
+        <div class="card-title">${h.name}</div>
+        <div class="card-sub">${h.dates}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-key">Address</div><div class="info-val" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><span>${h.addr}</span><button onclick="copyAddr(this,'${h.addr}')" style="flex-shrink:0;background:var(--gray-100);border:none;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:600;color:var(--teal);cursor:pointer;font-family:inherit;white-space:nowrap">Copy</button></div></div>
+      <div class="info-row"><div class="info-key">Location</div><div class="info-val">${h.loc}</div></div>
+      <div class="info-row"><div class="info-key">Transport</div><div class="info-val">${h.transport}</div></div>
+      <div class="tip-text">${h.tip}</div>
+    </div>`;
+  hotelsContainer.appendChild(el);
+});
+
+// ─── PLACES DATA ───
+const placesData = [
+  { city:'🏖 Da Nang', emoji:'🏛', name:'Hoi An Ancient Town', entry:'~$5 combined ticket', addr:'Hoi An Ancient Town, Quang Nam Province', dist:'30km south of Da Nang — ~35 min Grab, ~$6', tip:'UNESCO World Heritage. Go afternoon, stay for evening lanterns on the river — one of the most beautiful scenes in SEA. Try Cao Lau noodles. Book a tailor (48hr turnaround).' },
+  { city:'🏖 Da Nang', emoji:'🌉', name:'Ba Na Hills & Golden Bridge', entry:'~$30–35 includes cable car', addr:'Ba Na Hills Mountain Resort, Hoa Vang District', dist:'~25km west — ~45 min Grab, ~$11', tip:'Iconic bridge held by giant stone hands. Go on a weekday morning to beat tour groups. The French Village at the top is a bonus.' },
+  { city:'🏖 Da Nang', emoji:'⛰', name:'Marble Mountains', entry:'~$2 (elevator extra $0.60)', addr:'52 Huyen Tran Cong Chua, Ngu Hanh Son District', dist:'~2km from Hyatt — 5 min Grab or 20 min walk', tip:'Opens 7am. Caves, pagodas, city views carved into marble cliffs. Go early before tour groups. More authentic than Ba Na Hills.' },
+  { city:'🏖 Da Nang', emoji:'🐉', name:'Dragon Bridge (Cau Rong)', entry:'FREE', addr:'Nguyen Van Linh Boulevard, Da Nang', dist:'City center riverfront', tip:'Free fire & water show EVERY Saturday & Sunday night at 9pm. Just show up on the riverbank. No ticket needed.' },
+  { city:'🏔 Sapa', emoji:'⛰', name:'Fansipan Mountain', entry:'~$28–32 round trip cable car', addr:'Fansipan Legend Cable Car Station, Sa Pa, Lao Cai', dist:'~1km from Hotel de la Coupole', tip:'Summit at 3,143m — Roof of Indochina. Book tickets online in advance (April is busy). World\'s longest cable car. BRING YOUR DOWN JACKET — it\'s cold at the top.' },
+  { city:'🏔 Sapa', emoji:'🌾', name:'Cat Cat Village', entry:'~$4', addr:'Cat Cat Village, Sa Pa, Lao Cai Province', dist:'~2km downhill from Sapa town center', tip:'Easy 45 min walk through terraced rice fields to H\'mong village with waterfall. Walk back up is ~1hr — take a xe om ($2). Hire a local H\'mong guide for the full experience.' },
+  { city:'🏛 Hanoi', emoji:'🌅', name:'Hoan Kiem Lake & Ngoc Son Temple', entry:'Lake free · Temple $1.20', addr:'Hoan Kiem Lake, Hoan Kiem District, Hanoi', dist:'~20–25 min Grab from Sheraton (~$3)', tip:'Go at DAWN (6–7am) for the tai chi crowd and golden light. One of the great free experiences in Asia. Old Quarter starts just north of the lake.' },
+  { city:'🏛 Hanoi', emoji:'☕', name:'Giang Egg Coffee (Original)', entry:'~$2 per cup · Cash only', addr:'39 Nguyen Huu Huan, Hoan Kiem District', dist:'Old Quarter — ~25 min Grab from Sheraton', tip:'Narrow staircase, tiny hidden café. Original since 1946. No sign — look for #39, head upstairs. Do NOT go to branch locations. Creamy, almost dessert-like coffee.' },
+  { city:'🏛 Hanoi', emoji:'🏛', name:'Ho Chi Minh Mausoleum', entry:'Free', addr:'2 Hung Vuong, Ba Dinh District, Hanoi', dist:'~25 min Grab from Sheraton', tip:'Opens 8am. CLOSED Monday & Friday — plan around this. Dress respectfully (no shorts, no sleeveless). Very solemn and impressive.' },
+  { city:'🏛 Hanoi', emoji:'📜', name:'Temple of Literature', entry:'~$1.20', addr:'58 Quoc Tu Giam, Dong Da District, Hanoi', dist:'~25 min Grab from Sheraton', tip:'Vietnam\'s first university, founded 1070 AD. Beautifully preserved. Go in the morning or early afternoon.' },
+  { city:'🏛 Hanoi', emoji:'⛵', name:'Ninh Binh Day Trip (Trang An + Mua Cave)', entry:'~$10 boat + ~$4 cave climb', addr:'Trang An, Ninh Binh Province', dist:'~90km south — ~2hrs by private car (~$40–60 full day)', tip:'"Ha Long Bay on land." UNESCO Heritage Site. Boat through caves (2–3hrs). Combine with Mua Cave 500-step climb for panoramic view over rice paddies — GO BEFORE 9AM.' },
+  { city:'🏛 Hanoi', emoji:'🚢', name:'Ha Long Bay Overnight Cruise', entry:'~$180–350 per person', addr:'Tuan Chau Marina, Ha Long City, Quang Ninh', dist:'~3–3.5hrs drive from Hanoi (shuttle included in most cruises)', tip:'Book the BEST cruise you can. Recommended: Indochina Sails, Heritage Binh Chuan, Paradise Elegance. Overnight is essential — kayaking, Sung Sot Cave, seafood dinner on deck, sunrise over karsts.' },
+  { city:'🏙 Saigon', emoji:'🕊', name:'War Remnants Museum', entry:'~$1.60 · Opens 7:30am', addr:'28 Vo Van Tan, District 3, HCMC', dist:'~10 min Grab (~$2)', tip:'One of the most important museums in SEA. Plan 2–3 hrs minimum. 3rd floor Agent Orange exhibit is the most powerful section. Go in the morning before it gets crowded and hot.' },
+  { city:'🏙 Saigon', emoji:'🏛', name:'Reunification Palace', entry:'~$1.60 · Opens 8am', addr:'135 Nam Ky Khoi Nghia, District 1, HCMC', dist:'~5 min walk from Le Méridien', tip:'Frozen in time since April 30, 1975. Underground bunker with war maps and communications equipment. Surreal and fascinating — don\'t skip it.' },
+  { city:'🏙 Saigon', emoji:'🕳', name:'Cu Chi Tunnels', entry:'~$6 · Private car ~$35', addr:'Tinh Lo 15, Cu Chi District, HCMC', dist:'~40km northwest — ~1.5hrs by car', tip:'Leave by 7:30am to beat traffic and midday heat in the tunnels. Ben Dinh site is slightly less crowded than Ben Duoc. Book a guided tour for full context.' },
+  { city:'🏙 Saigon', emoji:'🛍', name:'Ben Thanh Market', entry:'Free', addr:'Ben Thanh Ward, District 1, HCMC', dist:'~10 min walk from Le Méridien', tip:'Opens 6am, night market until midnight. Negotiate EVERYTHING — start at 40–50% of asking price. Good for souvenirs, clothing, street food around the perimeter.' },
+  { city:'🏙 Saigon', emoji:'🎉', name:'Bui Vien Walking Street', entry:'Free', addr:'Bui Vien St, Pham Ngu Lao Ward, District 1', dist:'~15 min walk or 5 min Grab', tip:'Pedestrian party zone from ~7pm. Bars, live music, street food, sensory overload. Even a 1-hour walk with a cold beer is an unmissable Saigon experience.' },
+];
+
+const placesContainer = document.getElementById('places-container');
+let lastCity = '';
+placesData.forEach(p => {
+  if (p.city !== lastCity) {
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = p.city;
+    placesContainer.appendChild(label);
+    lastCity = p.city;
+  }
+  const el = document.createElement('div');
+  el.className = 'place-card';
+  el.innerHTML = `
+    <div class="place-header" onclick="togglePlace(this)">
+      <div class="place-emoji">${p.emoji}</div>
+      <div style="flex:1;min-width:0">
+        <div class="place-name">${p.name}</div>
+        <div class="place-entry">${p.entry}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="place-body">
+      <div class="info-row" style="margin-top:8px"><div class="info-key">Address</div><div class="info-val">${p.addr}</div></div>
+      <div class="info-row"><div class="info-key">Distance</div><div class="info-val">${p.dist}</div></div>
+      <div class="tip-text">${p.tip}</div>
+    </div>`;
+  placesContainer.appendChild(el);
+});
+
+// ─── CLOTHING DATA ───
+const clothingData = [
+  { group:'👕 Day T-Shirts', items:[
+    { text:'Uniqlo AIRism tees — white', qty:'×2', note:'Beach, smart casual, Da Nang & Saigon' },
+    { text:'Uniqlo AIRism tees — brown', qty:'×2', note:'Pairs with chinos & linen trousers' },
+    { text:'32 Degrees moisture-wicking tees — white', qty:'×2', note:'Lightweight, quick-dry, high-sweat days' },
+    { text:'32 Degrees moisture-wicking tees — black', qty:'×3', note:'Evenings, cooler Hanoi & Sapa days' },
+  ]},
+  { group:'👔 Smart Casual Shirts', items:[
+    { text:'Camp collar / resort shirt', qty:'×1', note:'Beach clubs, casual dinners — Uniqlo' },
+    { text:'Performance polo shirt', qty:'×1', note:'Hotel pool bars — Uniqlo' },
+    { text:'Long sleeve shirt — white', qty:'×1', note:'Temple visits, Sapa, light layering' },
+  ]},
+  { group:'👖 Bottoms', items:[
+    { text:'DRY-EX active shorts', qty:'×2', note:'Beach, markets, daytime — Uniqlo' },
+    { text:'Chino-style smart shorts', qty:'×1', note:'Elevates any top, casual dinners — Uniqlo' },
+    { text:'Casual shorts — black', qty:'×1', note:'Versatile evenings, all cities' },
+    { text:'Casual shorts — tan', qty:'×1', note:'Daytime exploring, Da Nang & Saigon' },
+    { text:'686 technical pants', qty:'×2', note:'Sapa trekking, outdoor days' },
+  ]},
+  { group:'🎩 Fancy / Dress-Up', items:[
+    { text:'Linen-blend button-down shirts (blue & sage)', qty:'×2', note:'Special dinners at luxury hotels — Uniqlo' },
+    { text:'Linen-blend trousers', qty:'×2', note:'Mix & match = 4 outfit combos — Uniqlo' },
+    { text:'Belt', qty:'×1', note:'Pulls smart & fancy looks together' },
+  ]},
+  { group:'😴 Sleepwear', items:[
+    { text:'Sleep tees (soft cotton)', qty:'×3', note:'Sleep only — Costco/Target/Amazon' },
+    { text:'Sleep/lounge shorts', qty:'×3', note:'Sleep only — use joggers in Sapa' },
+  ]},
+  { group:'🧥 Layers', items:[
+    { text:'Ultra Light Down Jacket', qty:'×1', note:'Sapa essential (59-72°F), packs to fist-size. Size up one — Uniqlo' },
+    { text:'Packable rain jacket', qty:'×1', note:'April showers everywhere' },
+    { text:'Lightweight fleece / thermal LS', qty:'×1', note:'Sapa mid-layer between tee and down jacket' },
+  ]},
+  { group:'👟 Shoes', items:[
+    { text:'Norda 001 (trail runner)', qty:'×1', note:'Sapa muddy trails — Norda' },
+    { text:'Norda 002 (road runner)', qty:'×1', note:'City walking + fancy dinners — Norda' },
+    { text:'Birkenstock sandals', qty:'×1', note:'Beach, pool, markets, Da Nang' },
+  ]},
+  { group:'🧢 Accessories & Socks', items:[
+    { text:'Wide brim hat', qty:'×1', note:'Sun protection — beach, sightseeing, Sapa' },
+    { text:'Baseball cap — neutral (olive/tan)', qty:'×1', note:'Everyday daytime, all cities' },
+    { text:'Baseball cap — dark (navy/black)', qty:'×1', note:'Evenings, Sapa trails' },
+    { text:'No-show / ankle socks (quick-dry)', qty:'×8', note:'Norda 002 + city days, through laundry' },
+    { text:'Wool-blend mid-crew socks (Darn Tough)', qty:'×2', note:'Sapa trekking with Norda 001' },
+    { text:'Casual low-cut socks', qty:'×3', note:'Hanoi & cooler Saigon evenings' },
+    { text:'AIRism Ultra Seamless Underwear', qty:'×8', note:'One per day + spare — Uniqlo' },
+    { text:'Swimsuit', qty:'×1', note:'Hyatt & InterContinental pools and beach' },
+    { text:'Flip flops / shower sandals', qty:'×1', note:'Hotel showers, pool deck' },
+  ]},
+];
+
+// ─── ESSENTIALS DATA ───
+const essentialsData = [
+  { group:'📄 Documents & Money', items:[
+    { text:'Passport', note:'Valid 6+ months past Apr 13', crit:true },
+    { text:'Vietnam e-Visa (printed)', note:'Apply at evisa.xuatnhapcanh.gov.vn', crit:true },
+    { text:'Hotel confirmations (printed)', note:'All 5 properties', crit:false },
+    { text:'Travel insurance card', note:'Print and keep with passport', crit:false },
+    { text:'USD cash — crisp clean bills', note:'$200–300, exchange in Vietnam for best rate', crit:true },
+    { text:'Amex card', note:'For hotel charges at all 5 properties', crit:false },
+    { text:'Passport photocopies (×2)', note:'Keep one separate from passport', crit:false },
+    { text:'Emergency contacts card', note:'US Embassy Da Nang, Hanoi, HCMC numbers', crit:false },
+  ]},
+  { group:'💊 Health & Medicine', items:[
+    { text:"Traveler's diarrhea kit", note:'Imodium + Pepto + oral rehydration salts', crit:true },
+    { text:'DEET insect repellent (30%+)', note:'Dengue is active — reapply every 4 hrs outside', crit:true },
+    { text:'Sunscreen SPF 50+', note:'Vietnam sun is intense in April', crit:false },
+    { text:'Prescription meds (extra supply)', note:'Carry in original labeled bottles', crit:false },
+    { text:'Antihistamine (Zyrtec/Claritin)', note:'Dust, pollen, unfamiliar foods', crit:false },
+    { text:'Pain reliever + fever reducer', note:'Ibuprofen or Tylenol', crit:false },
+    { text:'Antacid / Pepcid', note:'Rich Vietnamese food can be a shock', crit:false },
+    { text:'Blister bandages (Compeed)', note:'Heavy walking in Hoi An + Hanoi', crit:false },
+    { text:'Small first aid kit', note:'Gauze, antiseptic wipes, medical tape', crit:false },
+    { text:'Hand sanitizer (60ml)', note:'Use before every street food meal', crit:false },
+  ]},
+  { group:'⚡ Tech & Power', items:[
+    { text:'Universal travel adapter', note:'Vietnam uses Type A/C/F, 220V', crit:true },
+    { text:'Power bank (20,000 mAh)', note:'All-day navigation + photos drains fast', crit:true },
+    { text:'Local SIM or Airalo eSIM', note:'Buy online before departure — Vietnam data', crit:true },
+    { text:'Multi-port USB charger', note:'Charges phone + watch + buds at once', crit:false },
+    { text:'Noise-cancelling earbuds', note:'15+ hrs of flights each way', crit:false },
+    { text:'Charging cables (×2 per device)', note:'One always lives in daypack', crit:false },
+    { text:'Bluetooth speaker', note:'Hotel rooms feel more like home', crit:false },
+    { text:'Google Translate — offline VN pack', note:'Download before departure — camera mode essential', crit:false },
+    { text:'Offline maps downloaded (Vietnam)', note:'Maps.me or Google Maps', crit:false },
+    { text:'Grab app installed', note:'The Uber of Vietnam — essential in Saigon', crit:false },
+  ]},
+  { group:'🧴 Toiletries & Grooming', items:[
+    { text:'TSA-compliant toiletry bag', note:'All liquids 100ml or less in quart bag', crit:false },
+    { text:'Deodorant', note:'Hard to find US brands in Vietnam', crit:false },
+    { text:'Electric razor / grooming kit', note:'Must be dual-voltage (100–240V)', crit:false },
+    { text:'Nail clippers + tweezers', note:'Checked bag only for tweezers', crit:false },
+    { text:'Travel laundry detergent pods ×2', note:'For Day 7 laundry at Sheraton', crit:false },
+    { text:'Microfiber towel (small)', note:'Beach/pool backup — dries in 1 hr', crit:false },
+    { text:'Insoles (arch support)', note:'Hoi An cobblestones are brutal', crit:false },
+    { text:'Eye drops (preservative-free)', note:'Airplane cabin air is extremely dry', crit:false },
+    { text:'Lip balm + moisturizer', note:'Small tubes for the flight', crit:false },
+    { text:'Melatonin (0.5–1mg)', note:'Vietnam is 15 hrs ahead of Ontario CA', crit:false },
+  ]},
+  { group:'✈ Flight Comfort', items:[
+    { text:'Sleep mask', note:'Cabin lights stay on longer than expected', crit:false },
+    { text:'Reusable water bottle', note:'Fill after security — Vietnam tap water NOT safe', crit:true },
+    { text:'Snacks from home', note:'Nuts, bars — layover food in Taipei is pricey', crit:false },
+  ]},
+  { group:'🎒 Daypack & On-The-Go', items:[
+    { text:'Packable daypack (20–25L)', note:'Folds into itself — beach + market days', crit:false },
+    { text:'RFID blocking wallet', note:'Pickpockets active in markets + night alleys', crit:false },
+    { text:'Dry bag / waterproof pouch', note:'April showers + boat trips', crit:false },
+    { text:'Lightweight rain poncho', note:'Folds tiny — April showers hit suddenly', crit:false },
+    { text:'TSA-approved padlock', note:'For checked bag between cities', crit:false },
+    { text:'Ziploc bags (various sizes)', note:'Keep electronics dry, dirty laundry', crit:false },
+    { text:'Collapsible umbrella', note:'Compact for a belt bag', crit:false },
+    { text:'Safety pins (×6)', note:'Backpack zippers, clothing emergencies', crit:false },
+  ]},
+];
+
+// In-memory state — no localStorage needed
+const checkState = { clothing: {}, essentials: {} };
+
+function buildChecklist(data, prefix, containerId, barId, countId) {
+  const container = document.getElementById(containerId);
+
+  data.forEach((group, gi) => {
+    const header = document.createElement('div');
+    header.className = 'check-group-header';
+    header.textContent = group.group;
+    container.appendChild(header);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card';
+    wrapper.style.borderRadius = '0 0 14px 14px';
+    wrapper.style.marginBottom = '10px';
+
+    group.items.forEach((item, ii) => {
+      const key = `${gi}-${ii}`;
+      const el = document.createElement('div');
+      el.className = 'check-item';
+      el.dataset.key = key;
+      el.dataset.prefix = prefix;
+      el.innerHTML = `
+        <div class="check-box"></div>
+        <div class="check-content">
+          ${item.crit ? '<div class="check-crit">★ Critical</div>' : ''}
+          <div class="check-text">${item.text}</div>
+          <div class="check-note">${item.note}</div>
+        </div>
+        ${item.qty ? `<div class="check-qty">${item.qty}</div>` : ''}`;
+      el.addEventListener('click', () => toggleCheck(el, prefix, key, barId, countId, data));
+      wrapper.appendChild(el);
+    });
+    container.appendChild(wrapper);
+  });
+
+  updateBar(barId, countId, prefix, data);
+}
+
+function updateBar(barId, countId, prefix, data) {
+  let total = 0, checked = 0;
+  data.forEach((g, gi) => g.items.forEach((item, ii) => {
+    total++;
+    if (checkState[prefix][`${gi}-${ii}`]) checked++;
+  }));
+  const pct = total ? Math.round(checked / total * 100) : 0;
+  document.getElementById(barId).style.width = pct + '%';
+  document.getElementById(countId).textContent = `${checked} / ${total}`;
+}
+
+function toggleCheck(el, prefix, key, barId, countId, data) {
+  checkState[prefix][key] = !checkState[prefix][key];
+  el.classList.toggle('checked', checkState[prefix][key]);
+  updateBar(barId, countId, prefix, data);
+}
+
+function resetChecks(prefix) {
+  checkState[prefix] = {};
+  document.querySelectorAll(`.check-item[data-prefix="${prefix}"]`).forEach(el => el.classList.remove('checked'));
+  if (prefix === 'clothing') updateBar('clothing-bar', 'clothing-count', 'clothing', clothingData);
+  if (prefix === 'essentials') updateBar('essentials-bar', 'essentials-count', 'essentials', essentialsData);
+}
+
+buildChecklist(clothingData, 'clothing', 'clothing-container', 'clothing-bar', 'clothing-count');
+buildChecklist(essentialsData, 'essentials', 'essentials-container', 'essentials-bar', 'essentials-count');
+
+// ─── TAB SWITCHING ───
+function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('page-' + name).scrollTop = 0;
+  updateJumpBtn(name);
+}
+
+// ─── TOGGLE HELPERS ───
+function copyAddr(btn, addr) {
+  navigator.clipboard.writeText(addr).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = 'var(--teal)'; }, 2000);
+  }).catch(() => {
+    btn.textContent = '✓ Copied';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = 'var(--teal)'; }, 2000);
+  });
+}
+
+function toggleCard(btn) {
+  const card = btn.closest('.card');
+  card.classList.toggle('open');
+}
+function toggleDay(btn) {
+  const card = btn.closest('.day-card');
+  card.classList.toggle('open');
+  const chev = btn.querySelector('.card-chevron');
+  if (chev) chev.style.transform = card.classList.contains('open') ? 'rotate(90deg)' : '';
+}
+function togglePlace(btn) {
+  const card = btn.closest('.place-card');
+  card.classList.toggle('open');
+  const chev = btn.querySelector('.card-chevron');
+  if (chev) chev.style.transform = card.classList.contains('open') ? 'rotate(90deg)' : '';
+}
+
+// ─── LIVE CLOCKS ───
+function updateClocks() {
+  const now = new Date();
+
+  const laTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+  const vnTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+
+  function fmt(d) {
+    const h = d.getHours() % 12 || 12;
+    const m = String(d.getMinutes()).padStart(2, '0');
+    const ampm = d.getHours() < 12 ? 'AM' : 'PM';
+    const day = d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    return { time: `${h}:${m}`, ampm, day };
+  }
+
+  const la = fmt(laTime);
+  const vn = fmt(vnTime);
+
+  document.getElementById('clock-la').childNodes[0].textContent = la.time;
+  document.getElementById('ampm-la').textContent = ' ' + la.ampm;
+  document.getElementById('date-la').textContent = la.day;
+
+  document.getElementById('clock-vn').childNodes[0].textContent = vn.time;
+  document.getElementById('ampm-vn').textContent = ' ' + vn.ampm;
+  document.getElementById('date-vn').textContent = vn.day;
+}
+updateClocks();
+setInterval(updateClocks, 1000);
+
+// ─── SCROLL TOP ───
+function jumpToHotels() {
+  const hotelSection = document.getElementById('hotels-section');
+  const itineraryPage = document.getElementById('page-itinerary');
+  if (hotelSection && itineraryPage) {
+    itineraryPage.scrollTo({ top: hotelSection.offsetTop - 12, behavior: 'smooth' });
+  }
+}
+
+function updateJumpBtn(tabName) {
+  const btn = document.getElementById('jumpHotels');
+  btn.classList.toggle('hidden', tabName !== 'itinerary');
+}
+
+function scrollToTop() {
+  const activePage = document.querySelector('.page.active');
+  if (activePage) activePage.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('.page').forEach(page => {
+  page.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    btn.classList.toggle('visible', page.scrollTop > 300 && page.classList.contains('active'));
+  });
+});
+</script>
+</body>
+</html>
