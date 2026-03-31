@@ -36,7 +36,7 @@
   }
   .tab {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.45); font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.45); font-size: 9px; font-weight: 500; letter-spacing: 0.3px;
     cursor: pointer; transition: color 0.2s; padding: 4px 0; text-transform: uppercase;
     border: none; background: none; gap: 3px;
   }
@@ -259,6 +259,9 @@
   </button>
   <button class="tab" onclick="showTab('info')" id="tab-info">
     <span class="icon">ℹ️</span>Info
+  </button>
+  <button class="tab" onclick="showTab('money')" id="tab-money">
+    <span class="icon">💵</span>Money
   </button>
 </nav>
 
@@ -834,6 +837,373 @@
 </div>
 
 <!-- ══════════════════════ SCROLL TO TOP ══════════════════════ -->
+<!-- ══════════════════════ MONEY PAGE ══════════════════════ -->
+<div class="page" id="page-money">
+  <div style="background:linear-gradient(135deg,#1D6E4F,#145238);padding:28px 20px 20px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">💵</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white">Money & Currency</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px">Live USD ↔ VND Converter</div>
+  </div>
+
+  <div class="content">
+
+    <!-- RATE DISPLAY -->
+    <div style="background:var(--white);border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 8px rgba(0,0,0,0.07)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-500)">Exchange Rate</div>
+          <div id="rate-display" style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy);margin-top:2px">Loading…</div>
+          <div id="rate-sub" style="font-size:11px;color:var(--gray-500);margin-top:1px">$1 USD = -- VND</div>
+        </div>
+        <button onclick="fetchRate()" id="rate-refresh-btn" style="background:var(--teal);color:white;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">↻ Refresh</button>
+      </div>
+      <div id="rate-updated" style="font-size:11px;color:var(--gray-500);border-top:1px solid var(--gray-100);padding-top:8px;margin-top:4px">Fetching live rate…</div>
+    </div>
+
+    <!-- CONVERTER -->
+    <div style="background:var(--white);border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 1px 8px rgba(0,0,0,0.07)">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--teal);margin-bottom:14px">💱 Converter</div>
+
+      <!-- USD → VND -->
+      <div style="margin-bottom:6px">
+        <label style="font-size:13px;font-weight:700;color:var(--navy);display:block;margin-bottom:8px">🇺🇸 US Dollars (USD)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="position:relative;flex:1">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:700;color:var(--gray-400)">$</span>
+            <input type="number" id="usd-input" placeholder="0.00" min="0" step="0.01"
+              oninput="convertUSD(this.value)"
+              style="width:100%;border:2px solid var(--gray-100);border-radius:10px;padding:14px 12px 14px 28px;font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);outline:none;-webkit-appearance:none;appearance:none">
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <button onclick="setUSD(1)"   class="quick-btn">$1</button>
+          <button onclick="setUSD(5)"   class="quick-btn">$5</button>
+          <button onclick="setUSD(10)"  class="quick-btn">$10</button>
+          <button onclick="setUSD(20)"  class="quick-btn">$20</button>
+          <button onclick="setUSD(50)"  class="quick-btn">$50</button>
+          <button onclick="setUSD(100)" class="quick-btn">$100</button>
+        </div>
+        <div style="margin-top:10px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;border-left:3px solid var(--green)">
+          <div style="font-size:11px;color:var(--gray-500);margin-bottom:3px">= Vietnamese Dong</div>
+          <div id="usd-to-vnd" style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--green)">--</div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--gray-100);margin:18px 0;display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:1px;background:var(--gray-100)"></div>
+        <span style="font-size:18px">⇅</span>
+        <div style="flex:1;height:1px;background:var(--gray-100)"></div>
+      </div>
+
+      <!-- VND → USD -->
+      <div>
+        <label style="font-size:13px;font-weight:700;color:var(--navy);display:block;margin-bottom:8px">🇻🇳 Vietnamese Dong (VND)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="position:relative;flex:1">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:700;color:var(--gray-400)">₫</span>
+            <input type="number" id="vnd-input" placeholder="0" min="0" step="1000"
+              oninput="convertVND(this.value)"
+              style="width:100%;border:2px solid var(--gray-100);border-radius:10px;padding:14px 12px 14px 30px;font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);outline:none;-webkit-appearance:none;appearance:none">
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <button onclick="setVND(10000)"   class="quick-btn vnd-quick">₫10K</button>
+          <button onclick="setVND(50000)"   class="quick-btn vnd-quick">₫50K</button>
+          <button onclick="setVND(100000)"  class="quick-btn vnd-quick">₫100K</button>
+          <button onclick="setVND(200000)"  class="quick-btn vnd-quick">₫200K</button>
+          <button onclick="setVND(500000)"  class="quick-btn vnd-quick">₫500K</button>
+          <button onclick="setVND(1000000)" class="quick-btn vnd-quick">₫1M</button>
+          <button onclick="addLastVND()" class="quick-btn" id="vnd-add-btn" style="background:var(--teal);color:white;font-size:15px;padding:7px 13px" title="Add last amount again">+</button>
+        </div>
+        <div style="margin-top:10px;background:var(--gray-50);border-radius:10px;padding:14px;text-align:center;border-left:3px solid var(--navy)">
+          <div style="font-size:11px;color:var(--gray-500);margin-bottom:3px">= US Dollars</div>
+          <div id="vnd-to-usd" style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy)">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPPING GUIDE -->
+    <div class="section-label">💡 Tipping Guide — Vietnam</div>
+
+    <div class="card" style="cursor:default;margin-bottom:10px">
+      <div style="padding:4px 0">
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🍜 Street Food / Local Restaurants</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Pho stalls, banh mi carts, local spots</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--green)">Not expected</div>
+              <div style="font-size:11px;color:var(--gray-500)">Round up if you want</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🍽 Mid-Range Restaurants</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Tourist restaurants, cafes, beach clubs</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">5–10%</div>
+              <div style="font-size:11px;color:var(--gray-500)">~50K–100K VND</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🏨 Hotel Restaurants (Your Hotels)</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Hyatt, InterCon, Sheraton, Le Méridien</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">10%</div>
+              <div style="font-size:11px;color:var(--gray-500)">Check if service included</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🚗 Grab (Ride-hailing)</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Your main transport app</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--green)">Not required</div>
+              <div style="font-size:11px;color:var(--gray-500)">Round up as courtesy</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🛵 Xe Om (Motorbike Taxi)</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Local moto rides, Sapa xe om</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">Round up</div>
+              <div style="font-size:11px;color:var(--gray-500)">~5K–10K VND</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">💆 Spa & Massage</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Hotel spa, street massage shops</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">10–15%</div>
+              <div style="font-size:11px;color:var(--gray-500)">~50K–150K VND</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🧭 Tour Guides</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Cu Chi, Hoi An, Ninh Binh, Ha Long</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">$3–5 USD</div>
+              <div style="font-size:11px;color:var(--gray-500)">~75K–125K VND per person</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🏨 Hotel Housekeeping</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Leave on pillow daily</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">$1–2 USD</div>
+              <div style="font-size:11px;color:var(--gray-500)">~25K–50K VND</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--gray-100)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">🧳 Bellhop / Porter</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">At your 5-star hotels</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">$1–2 USD</div>
+              <div style="font-size:11px;color:var(--gray-500)">Per bag</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:11px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy)">⛵ Ha Long Boat Crew</div>
+              <div style="font-size:12px;color:var(--gray-500);margin-top:2px">Overnight cruise staff</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;padding-left:10px">
+              <div style="font-size:14px;font-weight:700;color:var(--teal)">$5–10 USD</div>
+              <div style="font-size:11px;color:var(--gray-500)">Per person total</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK REFERENCE -->
+    <div class="section-label">📊 Quick Price Reference</div>
+    <div class="card" style="cursor:default;margin-bottom:10px">
+      <div style="padding:4px 0">
+        <div style="padding:8px 16px;background:var(--navy);display:flex;justify-content:space-between;border-radius:14px 14px 0 0">
+          <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px">Item</span>
+          <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px">Approx. Cost</span>
+        </div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Pho (street stall)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫30K–50K (~$1.20–2)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">Banh mi</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫20K–35K (~$0.80–1.40)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Grab ride (short)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫30K–80K (~$1.20–3.20)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">Grab ride (airport)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫150K–200K (~$6–8)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Beer (street)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫15K–25K (~$0.60–1)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">Coffee (local cafe)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫25K–50K (~$1–2)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Egg coffee (Hanoi)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫50K (~$2)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">ATM withdrawal fee</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫30K–55K per txn</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Bottled water (1.5L)</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫10K–20K (~$0.40–0.80)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">Fansipan cable car</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫700K–800K (~$28–32)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Ba Na Hills entry</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫750K–850K (~$30–34)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">Cu Chi Tunnels entry</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫150K (~$6)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white)"><span style="font-size:13px;color:var(--gray-700)">Ninh Binh boat tour</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫250K (~$10)</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--gray-50)"><span style="font-size:13px;color:var(--gray-700)">Ha Long Bay overnight</span><span style="font-size:13px;font-weight:600;color:var(--teal)">~$180–350 USD</span></div>
+        <div style="padding:9px 16px;display:flex;justify-content:space-between;background:var(--white);border-radius:0 0 14px 14px"><span style="font-size:13px;color:var(--gray-700)">Vietnam SIM card</span><span style="font-size:13px;font-weight:600;color:var(--teal)">₫100K–200K (~$4–8)</span></div>
+      </div>
+    </div>
+
+    <!-- MONEY TIPS -->
+    <div class="section-label">💰 Money Tips</div>
+    <div class="tip-card" style="margin-bottom:8px">
+      <div class="tip-card-title">🏧 ATMs</div>
+      <div class="tip-card-text">Use <strong>VP Bank or Vietcombank</strong> ATMs for lowest fees. Always choose to be charged in <strong>VND</strong> — never accept dynamic currency conversion (DCC) to USD. Withdraw ₫3M–5M at a time.</div>
+    </div>
+    <div class="tip-card" style="margin-bottom:8px">
+      <div class="tip-card-title">💵 Cash Exchange</div>
+      <div class="tip-card-text">Exchange USD at a <strong>gold shop</strong> the morning after you arrive in Da Nang — rates are significantly better than airport counters. Bills must be <strong>crisp and clean</strong> — ripped or marked bills get rejected.</div>
+    </div>
+    <div class="tip-card" style="margin-bottom:8px">
+      <div class="tip-card-title">🛍 Bargaining</div>
+      <div class="tip-card-text">At Ben Thanh and street markets, <strong>start at 40–50% of the asking price</strong>. Stay friendly and smile — it's a game, not a fight. Walk away slowly if they won't budge — they'll often call you back.</div>
+    </div>
+    <div class="tip-card" style="margin-bottom:24px">
+      <div class="tip-card-title">💳 Cards</div>
+      <div class="tip-card-text">Your <strong>Amex</strong> works at all 5-star hotel restaurants and reception. Use <strong>Grab</strong> with a card for rides. Many street vendors and markets are <strong>cash only</strong> — always keep ₫200K–500K on you.</div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .quick-btn {
+    background: var(--gray-100); border: none; border-radius: 8px; padding: 7px 11px;
+    font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
+    font-family: inherit; transition: background 0.15s;
+  }
+  .quick-btn:active { background: var(--teal); color: white; }
+</style>
+
+<script>
+let liveRate = 25400; // fallback rate
+
+async function fetchRate() {
+  const btn = document.getElementById('rate-refresh-btn');
+  const rateEl = document.getElementById('rate-display');
+  const subEl = document.getElementById('rate-sub');
+  const updEl = document.getElementById('rate-updated');
+  btn.textContent = '↻ …';
+  btn.style.opacity = '0.6';
+
+  try {
+    // Free open exchange rate API — no key required
+    const res = await fetch('https://open.er-api.com/v6/latest/USD');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.result !== 'success') throw new Error('API error');
+    liveRate = data.rates.VND;
+
+    const formatted = Math.round(liveRate).toLocaleString('en-US');
+    rateEl.textContent = '₫' + formatted;
+    subEl.textContent = '$1 USD = ₫' + formatted + ' VND';
+
+    const now = new Date();
+    const ts = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}) + ' · ' +
+                now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    updEl.textContent = '✓ Live rate · Last updated ' + ts;
+    updEl.style.color = 'var(--teal)';
+
+    // Refresh converter outputs
+    convertUSD(document.getElementById('usd-input').value);
+    convertVND(document.getElementById('vnd-input').value);
+  } catch(e) {
+    updEl.textContent = '⚠ Could not fetch live rate — using last known rate';
+    updEl.style.color = 'var(--gold)';
+    rateEl.textContent = '₫' + Math.round(liveRate).toLocaleString('en-US');
+    subEl.textContent = '$1 USD ≈ ₫' + Math.round(liveRate).toLocaleString('en-US') + ' VND (cached)';
+  }
+
+  btn.textContent = '↻ Refresh';
+  btn.style.opacity = '1';
+}
+
+function fmtVNDFull(n) {
+  if (n >= 1000000) return '₫' + (n/1000000).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:2}) + 'M';
+  return '₫' + Math.round(n).toLocaleString('en-US');
+}
+function fmtUSD(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function convertUSD(val) {
+  const usd = parseFloat(val);
+  if (!val || isNaN(usd) || usd < 0) { document.getElementById('usd-to-vnd').textContent = '--'; return; }
+  document.getElementById('usd-to-vnd').textContent = fmtVNDFull(usd * liveRate);
+}
+
+function convertVND(val) {
+  const vnd = parseFloat(val);
+  if (!val || isNaN(vnd) || vnd < 0) { document.getElementById('vnd-to-usd').textContent = '--'; return; }
+  lastVNDAmount = vnd;
+  document.getElementById('vnd-to-usd').textContent = fmtUSD(vnd / liveRate);
+}
+
+function setUSD(val) {
+  document.getElementById('usd-input').value = val;
+  convertUSD(val);
+}
+
+let lastVNDAmount = 0;
+
+function setVND(val) {
+  lastVNDAmount = val;
+  document.getElementById('vnd-input').value = val;
+  convertVND(val);
+  // Flash the + button to hint it's ready
+  const addBtn = document.getElementById('vnd-add-btn');
+  addBtn.style.background = 'var(--green)';
+  setTimeout(() => { addBtn.style.background = 'var(--teal)'; }, 300);
+}
+
+function addLastVND() {
+  if (!lastVNDAmount) return;
+  const current = parseFloat(document.getElementById('vnd-input').value) || 0;
+  const newVal = current + lastVNDAmount;
+  document.getElementById('vnd-input').value = newVal;
+  convertVND(newVal);
+  // Brief flash to confirm
+  const addBtn = document.getElementById('vnd-add-btn');
+  addBtn.textContent = '✓';
+  setTimeout(() => { addBtn.textContent = '+'; }, 400);
+}
+
+// Auto-fetch on load
+fetchRate();
+// Refresh every 5 minutes
+setInterval(fetchRate, 5 * 60 * 1000);
+</script>
+
 <button class="jump-hotels" id="jumpHotels" onclick="jumpToHotels()">🏨 Hotels ↓</button>
 <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</button>
 
